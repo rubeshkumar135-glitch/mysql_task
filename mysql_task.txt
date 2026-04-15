@@ -1,0 +1,101 @@
+Microsoft Windows [Version 10.0.26200.8037]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\rubes>mysql -u root -p
+Enter password: ****************
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.45 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE ecommerce;
+Database changed
+mysql> SELECT DISTINCT c.*
+    -> FROM customers c
+    -> JOIN orders o ON c.id = o.customer_id
+    -> WHERE o.order_date >= CURDATE() - INTERVAL 30 DAY;
++----+-------+-----------------+---------+
+| id | name  | email           | address |
++----+-------+-----------------+---------+
+|  1 | John  | john@gmail.com  | Chennai |
+|  2 | Alice | alice@gmail.com | Mumbai  |
++----+-------+-----------------+---------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT c.name, SUM(o.total_amount) AS total_spent
+    -> FROM customers c
+    -> JOIN orders o ON c.id = o.customer_id
+    -> GROUP BY c.id;
++-------+-------------+
+| name  | total_spent |
++-------+-------------+
+| John  |      280.00 |
+| Alice |      120.00 |
++-------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> UPDATE products
+    -> SET price = 45.00
+    -> WHERE name = 'Product C';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
+mysql> ALTER TABLE products
+    -> ADD discount DECIMAL(5,2);
+ERROR 1060 (42S21): Duplicate column name 'discount'
+mysql> SELECT * FROM products
+    -> ORDER BY price DESC
+    -> LIMIT 3;
++----+-----------+-------+-----------------+----------+
+| id | name      | price | description     | discount |
++----+-----------+-------+-----------------+----------+
+|  1 | Product A | 50.00 | Good product    |     NULL |
+|  3 | Product C | 45.00 | Best product    |     NULL |
+|  2 | Product B | 30.00 | Average product |     NULL |
++----+-----------+-------+-----------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT c.name
+    -> FROM customers c
+    -> JOIN orders o ON c.id = o.customer_id
+    -> JOIN order_items oi ON o.id = oi.order_id
+    -> JOIN products p ON oi.product_id = p.id
+    -> WHERE p.name = 'Product A';
+Empty set (0.01 sec)
+
+mysql> SELECT c.name, o.order_date
+    -> FROM customers c
+    -> JOIN orders o ON c.id = o.customer_id;
++-------+------------+
+| name  | order_date |
++-------+------------+
+| John  | 2026-04-14 |
+| Alice | 2026-04-04 |
+| John  | 2026-03-05 |
++-------+------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM orders
+    -> WHERE total_amount > 150.00;
++----+-------------+------------+--------------+
+| id | customer_id | order_date | total_amount |
++----+-------------+------------+--------------+
+|  1 |           1 | 2026-04-14 |       200.00 |
++----+-------------+------------+--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT AVG(total_amount) AS avg_order_value
+    -> FROM orders;
++-----------------+
+| avg_order_value |
++-----------------+
+|      133.333333 |
++-----------------+
+1 row in set (0.00 sec)

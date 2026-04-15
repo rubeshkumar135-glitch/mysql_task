@@ -1,21 +1,9 @@
-Microsoft Windows [Version 10.0.26200.8037]
-(c) Microsoft Corporation. All rights reserved.
-
-C:\Users\rubes>mysql -u root -p
-Enter password: ****************
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 10
-Server version: 8.0.45 MySQL Community Server - GPL
-
-Copyright (c) 2000, 2026, Oracle and/or its affiliates.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
 mysql> USE ecommerce;
+
+1.Retrieve all customers who have placed an order in the last 30 days.
+
+ANS:-
+
 Database changed
 mysql> SELECT DISTINCT c.*
     -> FROM customers c
@@ -29,6 +17,12 @@ mysql> SELECT DISTINCT c.*
 +----+-------+-----------------+---------+
 2 rows in set (0.00 sec)
 
+
+
+2.Get the total amount of all orders placed by each customer.
+
+ANS:-
+
 mysql> SELECT c.name, SUM(o.total_amount) AS total_spent
     -> FROM customers c
     -> JOIN orders o ON c.id = o.customer_id
@@ -41,15 +35,23 @@ mysql> SELECT c.name, SUM(o.total_amount) AS total_spent
 +-------+-------------+
 2 rows in set (0.00 sec)
 
+
+
+3.Update the price of Product C to 45.00.
+
+ANS:-
+
 mysql> UPDATE products
     -> SET price = 45.00
     -> WHERE name = 'Product C';
 Query OK, 0 rows affected (0.00 sec)
 Rows matched: 1  Changed: 0  Warnings: 0
 
-mysql> ALTER TABLE products
-    -> ADD discount DECIMAL(5,2);
-ERROR 1060 (42S21): Duplicate column name 'discount'
+
+4.Retrieve the top 3 products with the highest price.
+
+ANS:-
+
 mysql> SELECT * FROM products
     -> ORDER BY price DESC
     -> LIMIT 3;
@@ -62,6 +64,11 @@ mysql> SELECT * FROM products
 +----+-----------+-------+-----------------+----------+
 3 rows in set (0.00 sec)
 
+
+5.Get the names of customers who have ordered Product A.
+
+ANS:-
+
 mysql> SELECT DISTINCT c.name
     -> FROM customers c
     -> JOIN orders o ON c.id = o.customer_id
@@ -69,6 +76,11 @@ mysql> SELECT DISTINCT c.name
     -> JOIN products p ON oi.product_id = p.id
     -> WHERE p.name = 'Product A';
 Empty set (0.01 sec)
+
+
+6.Join the orders and customers tables to retrieve the customer's name and order date for each order. 
+
+ANS:-
 
 mysql> SELECT c.name, o.order_date
     -> FROM customers c
@@ -82,6 +94,11 @@ mysql> SELECT c.name, o.order_date
 +-------+------------+
 3 rows in set (0.00 sec)
 
+
+7.Retrieve the orders with a total amount greater than 150.00.
+
+ANS:-
+
 mysql> SELECT * FROM orders
     -> WHERE total_amount > 150.00;
 +----+-------------+------------+--------------+
@@ -90,6 +107,11 @@ mysql> SELECT * FROM orders
 |  1 |           1 | 2026-04-14 |       200.00 |
 +----+-------------+------------+--------------+
 1 row in set (0.00 sec)
+
+
+8.Retrieve the average total of all orders.
+
+ANS:-
 
 mysql> SELECT AVG(total_amount) AS avg_order_value
     -> FROM orders;
